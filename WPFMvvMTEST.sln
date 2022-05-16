@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32413.511
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFMvvMTest", "WPFMvvMTest.csproj", "{DB6FE59B-4FED-452B-8BB5-DF4374FA1C83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB6FE59B-4FED-452B-8BB5-DF4374FA1C83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6FE59B-4FED-452B-8BB5-DF4374FA1C83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6FE59B-4FED-452B-8BB5-DF4374FA1C83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6FE59B-4FED-452B-8BB5-DF4374FA1C83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D8C8436-08AD-4DFD-9AD8-B29F5ADBD0EB}
+	EndGlobalSection
+EndGlobal
