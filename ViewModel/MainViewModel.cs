@@ -12,7 +12,7 @@ using WPFMvvMTest.Model;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.IO;
-using System.Windows.Forms;
+using WPFMvvMTest.Service;
 
 namespace WPFMvvMTest.ViewModel
 {
@@ -65,13 +65,14 @@ namespace WPFMvvMTest.ViewModel
             {
                 if (MediaPlayer1.NaturalDuration.HasTimeSpan == false)
                     return 0;
-                return MediaPlayer1.Position.TotalMilliseconds / MediaPlayer1.NaturalDuration.TimeSpan.TotalMilliseconds * 100;
+                else
+                    return MediaPlayer1.Position.TotalMilliseconds / MediaPlayer1.NaturalDuration.TimeSpan.TotalMilliseconds * 100.0;
             }
             set
             {
                 progress = value;
                 OnPropertyChanged("Progress");
-                MediaPlayer1.Position = MediaPlayer1.NaturalDuration.TimeSpan / 100 * progress;
+                MediaPlayer1.Position = MediaPlayer1.NaturalDuration.TimeSpan / 100.0 * progress;
 
             }
         }
@@ -85,31 +86,26 @@ namespace WPFMvvMTest.ViewModel
 
         private void Play()
         {
-            
-            if(MediaPlayer1.NaturalDuration.HasTimeSpan == true)
-            {
-                this.Item.EndTime = MediaPlayer1.NaturalDuration.TimeSpan;
-                MediaPlayer1.Play();
-            }
+            MediaPlayer1.Play();
         }
         private void TimerTick(object sender,EventArgs e)
         {
             if (MediaPlayer1.NaturalDuration.HasTimeSpan == false)
                 return;
 
-            this.Item.Timer = MediaPlayer1.NaturalDuration.TimeSpan / 100 * progress;
+            this.Item.Timer = MediaPlayer1.NaturalDuration.TimeSpan / 100.0 * progress;
 
             // POSITION 갱신 만들기 
-            progress = MediaPlayer1.Position.TotalMilliseconds / MediaPlayer1.NaturalDuration.TimeSpan.TotalMilliseconds * 100;
+            progress = MediaPlayer1.Position.TotalMilliseconds / MediaPlayer1.NaturalDuration.TimeSpan.TotalMilliseconds * 100.0;
            
-            if (MediaPlayer1.Position >= this.item.EndTime)
+            //if (MediaPlayer1.Position >= this.item.EndTime)
+            if(progress == 100)
             {
                 Stop();
 
                 // CHECK Continuous 
                 if(isChecked)
                 {
-                    
                     MediaPlayer1.Close();
                     if (fileList.Count() - 1 <= thisSong)
                     {
@@ -118,6 +114,7 @@ namespace WPFMvvMTest.ViewModel
 
                     MediaPlayer1.Open(new Uri(fileList[++thisSong].Url,UriKind.Absolute));
                     Items = fileList;
+                    progress = 0;
                     Play();
                 }
             }
@@ -152,31 +149,17 @@ namespace WPFMvvMTest.ViewModel
         {
             this.item = new MediaPlayerModel();
             Volume = 100;
-            Mp3Init();
-            
-            timer.Interval = TimeSpan.FromMilliseconds(500);
-            timer.Tick += new EventHandler(TimerTick);
-            if (MediaPlayer1.NaturalDuration.HasTimeSpan)
-                this.Item.EndTime = MediaPlayer1.NaturalDuration.TimeSpan;
-            timer.Start();
-        }
+            fileList = Mp3Service.Mp3Init();
 
-        public void Mp3Init()
-        {
-            //ToDO FIleList 읽어오기
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            string path;
-            if(folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                path = folderBrowserDialog.SelectedPath;
-                DirectoryInfo di = new DirectoryInfo(path);
-                foreach(var file in di.GetFiles())
-                {
-                    fileList.Add(new MP3File { Url = file.FullName, FileName = file.Name });
-                }
-            }
             MediaPlayer1.Open(new Uri(fileList[thisSong].Url, UriKind.Absolute));
             Items = fileList;
+            timer.Interval = TimeSpan.FromMilliseconds(500);
+            timer.Tick += new EventHandler(TimerTick);
+            // if (MediaPlayer1.NaturalDuration.HasTimeSpan)
+                // this.Item.EndTime = MediaPlayer1.NaturalDuration.TimeSpan;
+            // Remove : 연속 재생시 무한 오류때문에 넣어둠
+            //this.Item.EndTime = TimeSpan.FromSeconds(10);
+            timer.Start();
         }
 
         MP3FileList showList = new MP3FileList();
